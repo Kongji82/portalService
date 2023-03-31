@@ -11,50 +11,77 @@ public class UserDao {
     }
 
     public User findById(Long id) throws ClassNotFoundException, SQLException {
-        Connection connection = dataSource.getConnection();
-        // 쿼리 만들고
-        PreparedStatement preparedStatement = connection.prepareStatement
-                ("select  id, name, password from userinfo where id = ?");
-        preparedStatement.setLong(1, id);
-        // 쿼리 실행하고
-        ResultSet resultSet = preparedStatement.executeQuery();
-        resultSet.next();
-        // 결과를 사용자 정보에 매핑
-        User user = new User();
-        user.setId(resultSet.getLong("id"));
-        user.setName(resultSet.getString("name"));
-        user.setPassword(resultSet.getString("password"));
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        User user;
+        try {
+            connection = dataSource.getConnection();
+            preparedStatement = connection.prepareStatement
+                    ("select  id, name, password from userinfo where id = ?");
+            preparedStatement.setLong(1, id);
+            resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            user = new User();
+            user.setId(resultSet.getLong("id"));
+            user.setName(resultSet.getString("name"));
+            user.setPassword(resultSet.getString("password"));
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                preparedStatement.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                resultSet.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
-        // 자원을 해지
-        connection.close();
-        preparedStatement.close();
-        resultSet.close();
-        // 결과를 리턴
         return user;
     }
 
     public void insert(User user) throws ClassNotFoundException, SQLException {
-        // 데이터 어딨어? mysql
-        // mysql 클래스 로딩
-        Connection connection = dataSource.getConnection();
-        // 쿼리 만들고
-        PreparedStatement preparedStatement = connection.prepareStatement
-                ("insert into userinfo (name, password) values (?, ?)"
-                        , Statement.RETURN_GENERATED_KEYS);
-        preparedStatement.setString(1, user.getName());
-        preparedStatement.setString(2, user.getPassword());
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = dataSource.getConnection();
+            preparedStatement = connection.prepareStatement
+                    ("insert into userinfo (name, password) values (?, ?)"
+                            , Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, user.getName());
+            preparedStatement.setString(2, user.getPassword());
 
-        // 쿼리 실행하고
-        preparedStatement.executeUpdate();
-        ResultSet resultSet = preparedStatement.getGeneratedKeys();
-        resultSet.next();
+            preparedStatement.executeUpdate();
+            resultSet = preparedStatement.getGeneratedKeys();
+            resultSet.next();
 
-        // 결과를 사용자 정보에 매핑
-        user.setId(resultSet.getLong(1));
+            user.setId(resultSet.getLong(1));
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                preparedStatement.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                resultSet.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
-        // 자원을 해지
-        connection.close();
-        preparedStatement.close();
-        resultSet.close();
+
     }
 }
