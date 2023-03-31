@@ -5,5 +5,5 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public interface ConnectionMaker {
-    abstract Connection getConnection() throws ClassNotFoundException, SQLException;
+    Connection getConnection() throws ClassNotFoundException, SQLException;
 }
