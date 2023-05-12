@@ -16,8 +16,6 @@ public class EncodingFilter implements Filter {
         System.out.println("********* filter **********");
         response.setContentType("text/html; charset=UTF-8");
         chain.doFilter(request, response);
-
-
     }
 
     @Override
@@ -25,4 +23,5 @@ public class EncodingFilter implements Filter {
         System.out.println("********* filter destroy **********");
         Filter.super.destroy();
     }
+
 }
