@@ -9,6 +9,7 @@
        http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context.xsd
 ">
     <context:component-scan base-package="kr.ac.jejunu.user" />
+    <annotation-driven/>
     <beans:bean name="/simple" class="kr.ac.jejunu.user.SimpleController">
 <!--    <beans:bean name="/user" class="kr.ac.jejunu.user.UserController">-->
         <beans:constructor-arg name="userDao" ref="userDao" />
@@ -34,6 +35,8 @@
             </beans:bean>
         </beans:property>
     </beans:bean>
+
+    <resources mapping="/images/**" location="WEB-INF/static/"></resources>
 
 
 </beans:beans>
